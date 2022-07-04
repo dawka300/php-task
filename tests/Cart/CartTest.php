@@ -23,7 +23,8 @@ class CartTest extends TestCase
 
         $this->assertCount(1, $cart->getItems());
         $this->assertEquals(15000, $cart->getTotalPrice());
-        $this->assertEquals($product, $cart->getItem(0)->getProduct());
+        /** zmnieniłem na dynamicznie dodawane id, bo tak na sztywno to sie źle operuje - w życiu uzyłbym pewnie jakiegoś ArrayCollection */
+        $this->assertEquals($product, $cart->getItem($product->getId())->getProduct());
     }
 
     /**
@@ -41,7 +42,7 @@ class CartTest extends TestCase
 
         $this->assertCount(1, $cart->getItems());
         $this->assertEquals(10000, $cart->getTotalPrice());
-        $this->assertEquals($product2, $cart->getItem(0)->getProduct());
+        $this->assertEquals($product2, $cart->getItem($product2->getId())->getProduct());
     }
 
     /**
@@ -71,7 +72,7 @@ class CartTest extends TestCase
             ->setQuantity($product, 2);
 
         $this->assertEquals(30000, $cart->getTotalPrice());
-        $this->assertEquals(2, $cart->getItem(0)->getQuantity());
+        $this->assertEquals(2, $cart->getItem($product->getId())->getQuantity());
     }
 
     /**
@@ -82,6 +83,9 @@ class CartTest extends TestCase
         $product = $this->buildTestProduct(1, 15000);
 
         $cart = new Cart();
+        /** test bez sensu dla mnie - powielanie tylko logiki z add product - powinno rzucać wyjątkiem,
+         * albo w ogóle zrobić add product funkcją prywatną a dodawać przez tą metodę
+         */
         $cart->setQuantity($product, 1);
 
         $this->assertEquals(15000, $cart->getTotalPrice());
@@ -139,7 +143,7 @@ class CartTest extends TestCase
         return [
             [PHP_INT_MIN],
             [-1],
-            [1],
+            [2],
             [PHP_INT_MAX],
         ];
     }
